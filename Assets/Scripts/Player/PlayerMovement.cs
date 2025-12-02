@@ -232,6 +232,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+
     private void OnMoveInput(float move)
     {
         if (move != 0 && isGrounded) // Only allow dash if grounded
@@ -259,6 +260,7 @@ public class PlayerMovement : MonoBehaviour
         rb.velocity = new Vector2(jumpX, jumpForce);
 
         animator.SetBool("IsJumping", true);
+        animator.Play("PlayerJump", 0, 0f);
         isGrounded = false;
     }
 
