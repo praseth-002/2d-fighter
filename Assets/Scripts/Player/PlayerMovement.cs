@@ -1,161 +1,3 @@
-// using UnityEngine;
-// using UnityEngine.InputSystem;
-
-// public class PlayerMovement : MonoBehaviour
-// {
-//     [Header("Movement Settings")]
-//     public float moveSpeed = 5f;
-//     public float jumpForce = 12f;
-
-//     private Rigidbody2D rb;
-//     private PlayerControls controls;
-
-//     private float moveInput;   // 1D axis (A = -1, D = 1)
-//     private bool isGrounded;
-
-
-//     // private float jumpDirection = 0f;
-
-//     [SerializeField] private Animator animator;
-
-//     [Header("Dash Settings")]
-//     public float dashSpeed = 15f;
-//     public float dashDuration = 0.2f;
-//     public float doubleTapTime = 0.25f;
-
-//     private float lastTapTime = 0f;
-//     private float lastDirection = 0f;
-//     private bool isDashing = false;
-//     private float dashTimeLeft = 0f;
-
-
-//     private void Awake()
-//     {
-
-//         rb = GetComponent<Rigidbody2D>();
-//         controls = new PlayerControls();
-
-//         controls.Player.Jump.performed += ctx => Jump();
-//     }
-
-//     private void OnEnable() => controls.Enable();
-//     private void OnDisable() => controls.Disable();
-
-//     private void Update()
-//     {
-//         float move = controls.Player.Move.ReadValue<float>();
-
-//         if (isGrounded)
-//         {
-//             // Free ground movement
-//             rb.velocity = new Vector2(move * moveSpeed, rb.velocity.y);
-
-//             // Only run animation if on the ground
-//             if (move != 0)
-//                 animator.SetBool("IsRunning", true);
-//             else
-//                 animator.SetBool("IsRunning", false);
-//         }
-//         else
-//         {
-//             // In the air, make sure running animation is off
-//             animator.SetBool("IsRunning", false);
-//         }
-//     }
-
-//     // private void Update()
-//     // {
-//     //     float move = controls.Player.Move.ReadValue<float>();
-
-//     //     if (!isDashing)
-//     //     {
-//     //         // Double-tap detection
-//     //         if (move != 0)
-//     //         {
-//     //             if (move == lastDirection && (Time.time - lastTapTime) < doubleTapTime)
-//     //             {
-//     //                 StartDash(move);
-//     //             }
-//     //             else
-//     //             {
-//     //                 lastDirection = move;
-//     //                 lastTapTime = Time.time;
-//     //             }
-//     //         }
-
-//     //         // Normal movement
-//     //         if (isGrounded)
-//     //         {
-//     //             rb.velocity = new Vector2(move * moveSpeed, rb.velocity.y);
-//     //             animator.SetBool("IsRunning", move != 0);
-//     //         }
-//     //         else
-//     //         {
-//     //             animator.SetBool("IsRunning", false);
-//     //         }
-//     //     }
-//     //     else
-//     //     {
-//     //         // Dash movement stays until dash ends
-//     //         dashTimeLeft -= Time.deltaTime;
-//     //         if (dashTimeLeft <= 0f)
-//     //             isDashing = false;
-//     //     }
-//     // }
-
-
-//     private void TryJump()
-//     {
-//         if (isGrounded)
-//         {
-//             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-//             isGrounded = false;
-//         }
-//     }
-
-//     private void Jump()
-//     {
-//         if (!isGrounded) return;
-
-//         float move = controls.Player.Move.ReadValue<float>();
-
-//         // Apply horizontal + vertical jump velocity
-//         float jumpX = move * moveSpeed;
-//         rb.velocity = new Vector2(jumpX, jumpForce);
-
-//         // Trigger jump animation
-//         animator.SetBool("IsJumping", true);
-
-//         isGrounded = false;
-//     }
-
-
-//     private void OnCollisionEnter2D(Collision2D collision)
-//     {
-//         if (collision.collider.CompareTag("Ground"))
-//         {
-//             isGrounded = true;
-
-//             // Return to idle/running animation
-//             animator.SetBool("IsJumping", false);
-//         }
-//     }
-
-//     // private void StartDash(float direction)
-//     // {
-//     //     isDashing = true;
-//     //     dashTimeLeft = dashDuration;
-
-//     //     // Apply dash velocity instantly
-//     //     rb.velocity = new Vector2(direction * dashSpeed, rb.velocity.y);
-
-//     //     // Optional: dash animation
-//     //     // animator.Play("Dash", -1, 0f);
-//     // }
-
-// }
-
-
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -182,6 +24,48 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private Animator animator;
 
+    private bool isAttacking = false;
+    private float attackTime;
+
+    [Header("Attack Durations")]
+    public float punchDuration = 0.25f;
+    public float kickDuration = 0.40f;
+    public float specialDuration = 0.50f;
+
+    public GameObject punchHitbox;
+    public GameObject kickHitbox;
+    // public GameObject specialHitbox;
+
+    public void EnablePunchHitbox()
+    {
+        punchHitbox.SetActive(true);
+        Debug.Log("Punch Hitbox ENABLED");
+    }
+
+    public void EnableKickHitbox()
+    {
+        kickHitbox.SetActive(true);
+        Debug.Log("Kick Hitbox ENABLED");
+    }
+
+    // public void EnableSpecialHitbox()
+    // {
+    //     specialHitbox.SetActive(true);
+    //     Debug.Log("Special Hitbox ENABLED");
+    // }
+
+    public void DisableHitboxes()
+    {
+        punchHitbox.SetActive(false);
+        kickHitbox.SetActive(false);
+        // specialHitbox.SetActive(false);
+
+        Debug.Log("All Hitboxes DISABLED");
+    }
+
+
+
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -192,6 +76,11 @@ public class PlayerMovement : MonoBehaviour
 
         // Move input (for double-tap dash detection)
         controls.Player.Move.performed += ctx => OnMoveInput(ctx.ReadValue<float>());
+
+        controls.Player.Punch.performed += ctx => Punch();
+        controls.Player.Kick.performed += ctx => Kick();
+        controls.Player.Special.performed += ctx => Special();
+
     }
 
     private void OnEnable() => controls.Enable();
@@ -199,6 +88,19 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        // If attacking, freeze movement
+        if (isAttacking)
+        {
+            animator.SetBool("IsRunning", false);
+
+            attackTime -= Time.deltaTime;
+
+            if (attackTime <= 0f)
+                isAttacking = false;
+
+            return;
+        }
+
         float move = controls.Player.Move.ReadValue<float>();
 
         // Dash logic
@@ -252,6 +154,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
+        animator.SetBool("IsRunning", false);
         if (!isGrounded) return;
 
         float move = controls.Player.Move.ReadValue<float>();
@@ -285,4 +188,36 @@ public class PlayerMovement : MonoBehaviour
         // Optional: dash animation
         // animator.Play("Dash", -1, 0f);
     }
+
+    private void Punch()
+    {
+        if (isAttacking || !isGrounded) return;
+
+        isAttacking = true;
+        attackTime = punchDuration;
+
+        animator.Play("PlayerPunch", 0, 0f);
+    }
+
+    private void Kick()
+    {
+        if (isAttacking || !isGrounded) return;
+
+        isAttacking = true;
+        attackTime = kickDuration;
+
+        animator.Play("PlayerKick", 0, 0f);
+    }
+
+    private void Special()
+    {
+        if (isAttacking || !isGrounded) return;
+
+        isAttacking = true;
+        attackTime = specialDuration;
+
+        animator.Play("PlayerSpecial", 0, 0f);
+    }
+
+
 }
