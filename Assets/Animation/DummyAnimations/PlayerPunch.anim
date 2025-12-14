@@ -764,13 +764,13 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.21666667
-    functionName: Kick
+    functionName: Punch
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.25
+  - time: 0.21666667
     functionName: DisableHitboxes
     data: 
     objectReferenceParameter: {fileID: 0}

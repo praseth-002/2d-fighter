@@ -1,128 +1,78 @@
-// using UnityEngine;
-
-// public class PlayerHealth : MonoBehaviour
-// {
-//     public int maxHealth = 100;
-//     public int currentHealth;
-
-//     public Vector2 hitKnockback = new Vector2(5f, 2f);
-//     public float hitStunDuration = 0.3f;
-
-//     private Animator animator;
-//     private Rigidbody2D rb;
-//     private PlayerMovement movement;
-//     private bool isDead = false;
-
-//     private void Awake()
-//     {
-//         currentHealth = maxHealth;
-//         animator = GetComponent<Animator>();
-//         rb = GetComponent<Rigidbody2D>();
-//         movement = GetComponent<PlayerMovement>();
-//     }
-
-//     public void TakeDamage(int amount, Vector2 attackDirection)
-//     {
-//         if (isDead) return; // Ignore damage if already dead
-
-//         currentHealth = Mathf.Max(currentHealth - amount, 0);
-//         Debug.Log(gameObject.name + " took " + amount + " damage! HP: " + currentHealth);
-
-//         // Play hit animation
-//         if (animator != null)
-//             animator.Play("PlayerDamaged", 0, 0f);
-
-//         // Apply knockback
-//         if (rb != null)
-//             rb.velocity = new Vector2(attackDirection.x * hitKnockback.x, hitKnockback.y);
-
-//         // Temporarily disable movement
-//         if (movement != null)
-//             StartCoroutine(HitStunCoroutine());
-
-//         if (currentHealth <= 0)
-//             Die();
-//     }
-
-//     private System.Collections.IEnumerator HitStunCoroutine()
-//     {
-//         movement.enabled = false;
-//         yield return new WaitForSeconds(hitStunDuration);
-//         if (!isDead)
-//             movement.enabled = true;
-//     }
-
-//     private void Die()
-//     {
-//         isDead = true;
-//         Debug.Log(gameObject.name + " DIED!");
-
-//         // Play death animation if exists
-//         if (animator != null)
-//             animator.Play("PlayerDeath", 0, 0f);
-
-//         // Freeze movement and physics
-//         if (movement != null) movement.enabled = false;
-//         if (rb != null) rb.velocity = Vector2.zero;
-
-//         // Trigger round end (call RoundManager)
-//         RoundManager.Instance.PlayerDied(this);
-//     }
-// }
-
 using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
     public int maxHealth = 100;
     public int currentHealth;
-    public Vector2 hitKnockback = new Vector2(5f, 2f);
-    public float hitStunDuration = 0.3f;
 
+    [Header("Damage")]
+    public float blockDamageMultiplier = 0.2f;
+
+    [Header("Pushback")]
+    public float hitPushbackForce = 6f;
+    public float blockPushbackForce = 3f;
+
+    [Header("Stun")]
+    public float hitStunDuration = 0.4f;
+    public float blockStunDuration = 0.2f;
+
+    private PlayerMovement movement;
     private Animator animator;
     private Rigidbody2D rb;
-    private PlayerMovement movement;
-    private bool isDead = false;
 
     private void Awake()
     {
         currentHealth = maxHealth;
+        movement = GetComponent<PlayerMovement>();
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-        movement = GetComponent<PlayerMovement>();
     }
 
-    public void TakeDamage(int amount, Vector2 attackDirection)
+    public void TakeDamage(int damage, Vector2 hitDirection)
     {
-        if (isDead) return;
+        // bool blocked = movement.IsBlocking();
+        bool blocked = movement.IsBlocking();
 
-        currentHealth = Mathf.Max(currentHealth - amount, 0);
-        Debug.Log(gameObject.name + " took " + amount + " damage! HP: " + currentHealth);
 
-        if (animator != null)
+        if (blocked)
+        {
+            int reducedDamage = Mathf.RoundToInt(damage * blockDamageMultiplier);
+            currentHealth -= reducedDamage;
+
+            animator.Play("PlayerBlock", 0, 0f);
+            movement.EnterHitState(blockStunDuration);
+
+            ApplyPushback(hitDirection, blockPushbackForce);
+        }
+        else
+        {
+            currentHealth -= damage;
+
             animator.Play("PlayerDamaged", 0, 0f);
-
-        if (rb != null)
-            rb.velocity = new Vector2(attackDirection.x * hitKnockback.x, hitKnockback.y);
-
-        if (movement != null)
             movement.EnterHitState(hitStunDuration);
 
+            ApplyPushback(hitDirection, hitPushbackForce);
+        }
+
         if (currentHealth <= 0)
+        {
+            currentHealth = 0;
             Die();
+        }
+    }
+
+    private void ApplyPushback(Vector2 direction, float force)
+    {
+        direction.y = 0;
+        direction.Normalize();
+        rb.velocity = Vector2.zero;
+        rb.AddForce(direction * force, ForceMode2D.Impulse);
     }
 
     private void Die()
     {
-        isDead = true;
-        Debug.Log(gameObject.name + " DIED!");
-
-        if (animator != null)
-            animator.Play("PlayerDeath", 0, 0f);
-
-        if (movement != null) movement.EnterDeadState();
-        if (rb != null) rb.velocity = Vector2.zero;
-
+        animator.Play("PlayerDeath", 0, 0f);
+        movement.EnterDeadState();
         RoundManager.Instance.PlayerDied(this);
     }
 }

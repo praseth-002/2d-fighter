@@ -6,6 +6,7 @@ public enum PlayerState
     Moving,
     Jumping,
     Attacking,
+    Blocking,
     Hit,
     Dead
 }
@@ -16,11 +17,11 @@ public class PlayerMovement : MonoBehaviour
     public bool isPlayer2 = false;
     public Transform opponent;
 
-    [Header("Movement Settings")]
+    [Header("Movement")]
     public float moveSpeed = 5f;
     public float jumpForce = 12f;
 
-    [Header("Dash Settings")]
+    [Header("Dash")]
     public float dashSpeed = 15f;
     public float dashDuration = 0.2f;
     public float doubleTapTime = 0.25f;
@@ -28,7 +29,9 @@ public class PlayerMovement : MonoBehaviour
     [Header("Attack Durations")]
     public float punchDuration = 0.25f;
     public float kickDuration = 0.40f;
-    public float specialDuration = 0.50f;
+
+    [Header("Block Settings")]
+    public float blockRange = 1.5f;
 
     public GameObject punchHitbox;
     public GameObject kickHitbox;
@@ -36,7 +39,6 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
 
-    // Input
     private PlayerControls controlsP1;
     private PlayerControls1 controlsP2;
 
@@ -50,14 +52,11 @@ public class PlayerMovement : MonoBehaviour
     private float dashTimeLeft;
     private float lastTapTime;
     private float lastDirection;
-    private SpriteRenderer spriteRenderer;
-
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (!isPlayer2)
         {
@@ -67,7 +66,6 @@ public class PlayerMovement : MonoBehaviour
             controlsP1.Player.Move.performed += ctx => OnMoveInput(ctx.ReadValue<float>());
             controlsP1.Player.Punch.performed += _ => Punch();
             controlsP1.Player.Kick.performed += _ => Kick();
-            controlsP1.Player.Special.performed += _ => Special();
         }
         else
         {
@@ -77,10 +75,8 @@ public class PlayerMovement : MonoBehaviour
             controlsP2.Player.Move.performed += ctx => OnMoveInput(ctx.ReadValue<float>());
             controlsP2.Player.Punch.performed += _ => Punch();
             controlsP2.Player.Kick.performed += _ => Kick();
-            controlsP2.Player.Special.performed += _ => Special();
         }
     }
-
 
     private void OnEnable()
     {
@@ -100,12 +96,18 @@ public class PlayerMovement : MonoBehaviour
             return;
 
         FaceOpponent();
+        EvaluateBlocking();
+
+        if (currentState == PlayerState.Blocking)
+        {
+            animator.Play("PlayerBlock", 0, 0f);
+            rb.velocity = new Vector2(0, rb.velocity.y);
+            return;
+        }
 
         if (isAttacking)
         {
-            animator.SetBool("IsRunning", false);
             attackTime -= Time.deltaTime;
-
             if (attackTime <= 0f)
             {
                 isAttacking = false;
@@ -117,15 +119,11 @@ public class PlayerMovement : MonoBehaviour
 
         float move = GetMoveInput();
 
-        // Dash handling
         if (isDashing)
         {
             dashTimeLeft -= Time.deltaTime;
             rb.velocity = new Vector2(lastDirection * dashSpeed, rb.velocity.y);
-
-            if (dashTimeLeft <= 0f)
-                isDashing = false;
-
+            if (dashTimeLeft <= 0f) isDashing = false;
             return;
         }
 
@@ -142,11 +140,82 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // ================= BLOCK =================
+
+    // private void EvaluateBlocking()
+    // {
+    //     if (!isGrounded || isAttacking || !opponent)
+    //     {
+    //         if (currentState == PlayerState.Blocking)
+    //             currentState = PlayerState.Idle;
+    //         return;
+    //     }
+
+    //     float distance = Mathf.Abs(opponent.position.x - transform.position.x);
+    //     if (distance > blockRange)
+    //     {
+    //         if (currentState == PlayerState.Blocking)
+    //             currentState = PlayerState.Idle;
+    //         return;
+    //     }
+
+    //     float move = GetMoveInput();
+    //     bool opponentOnRight = opponent.position.x > transform.position.x;
+
+    //     bool holdingBack =
+    //         (opponentOnRight && move < 0) ||
+    //         (!opponentOnRight && move > 0);
+
+    //     currentState = holdingBack ? PlayerState.Blocking : PlayerState.Idle;
+    // }
+    private void EvaluateBlocking()
+    {
+        if (!isGrounded || isAttacking || !opponent)
+        {
+            ExitBlockIfNeeded();
+            return;
+        }
+
+        PlayerMovement opponentMovement = opponent.GetComponent<PlayerMovement>();
+        if (opponentMovement == null || !opponentMovement.IsAttacking())
+        {
+            ExitBlockIfNeeded();
+            return;
+        }
+
+        float distance = Mathf.Abs(opponent.position.x - transform.position.x);
+        if (distance > blockRange)
+        {
+            ExitBlockIfNeeded();
+            return;
+        }
+
+        float move = GetMoveInput();
+        bool opponentOnRight = opponent.position.x > transform.position.x;
+
+        bool holdingBack =
+            (opponentOnRight && move < 0) ||
+            (!opponentOnRight && move > 0);
+
+        if (holdingBack)
+            currentState = PlayerState.Blocking;
+        else
+            ExitBlockIfNeeded();
+    }
+
+
+    public bool IsBlocking()
+    {
+        return currentState == PlayerState.Blocking;
+    }
+
+    // ================= INPUT =================
+
     private float GetMoveInput()
     {
         return !isPlayer2
-       ? controlsP1.Player.Move.ReadValue<float>()
-       : controlsP2.Player.Move.ReadValue<float>();
+            ? controlsP1.Player.Move.ReadValue<float>()
+            : controlsP2.Player.Move.ReadValue<float>();
     }
 
     private void OnMoveInput(float move)
@@ -154,9 +223,7 @@ public class PlayerMovement : MonoBehaviour
         if (!isGrounded || move == 0) return;
 
         if (move == lastDirection && Time.time - lastTapTime < doubleTapTime)
-        {
             StartDash(move);
-        }
         else
         {
             lastDirection = move;
@@ -164,23 +231,21 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // ================= ACTIONS =================
+
     private void Jump()
     {
-        if (!isGrounded) return;
+        if (!isGrounded || currentState == PlayerState.Blocking) return;
 
-        float move = GetMoveInput();
-        rb.velocity = new Vector2(move * moveSpeed, jumpForce);
-
-        animator.SetBool("IsJumping", true);
+        rb.velocity = new Vector2(GetMoveInput() * moveSpeed, jumpForce);
         animator.Play("PlayerJump", 0, 0f);
-
         isGrounded = false;
         currentState = PlayerState.Jumping;
     }
 
     private void Punch()
     {
-        if (isAttacking || !isGrounded) return;
+        if (isAttacking || !isGrounded || currentState == PlayerState.Blocking) return;
 
         isAttacking = true;
         attackTime = punchDuration;
@@ -192,7 +257,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Kick()
     {
-        if (isAttacking || !isGrounded) return;
+        if (isAttacking || !isGrounded || currentState == PlayerState.Blocking) return;
 
         isAttacking = true;
         attackTime = kickDuration;
@@ -200,11 +265,6 @@ public class PlayerMovement : MonoBehaviour
 
         animator.Play("PlayerKick", 0, 0f);
         kickHitbox.SetActive(true);
-    }
-
-    private void Special()
-    {
-        // Reserved for later
     }
 
     private void StartDash(float direction)
@@ -219,9 +279,7 @@ public class PlayerMovement : MonoBehaviour
         if (!collision.collider.CompareTag("Ground")) return;
 
         isGrounded = true;
-        animator.SetBool("IsJumping", false);
-
-        if (currentState != PlayerState.Hit && currentState != PlayerState.Dead)
+        if (currentState != PlayerState.Hit)
             currentState = PlayerState.Idle;
     }
 
@@ -234,10 +292,10 @@ public class PlayerMovement : MonoBehaviour
     public void EnterHitState(float duration)
     {
         currentState = PlayerState.Hit;
-        Invoke(nameof(ExitHitState), duration);
+        Invoke(nameof(ExitHit), duration);
     }
 
-    private void ExitHitState()
+    private void ExitHit()
     {
         if (currentState != PlayerState.Dead)
             currentState = PlayerState.Idle;
@@ -253,19 +311,20 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!opponent) return;
 
-        if (transform.position.x < opponent.position.x)
-            transform.localScale = new Vector3(1, 1, 1);
-        else
-            transform.localScale = new Vector3(-1, 1, 1);
+        transform.localScale =
+            transform.position.x < opponent.position.x
+            ? Vector3.one
+            : new Vector3(-1, 1, 1);
     }
-    // private void FaceOpponent()
-    // {
-    //     if (!opponent || !spriteRenderer) return;
 
-    //     // Face right if opponent is on the right
-    //     bool opponentOnRight = opponent.position.x > transform.position.x;
+    public bool IsAttacking()
+    {
+        return currentState == PlayerState.Attacking;
+    }
+    private void ExitBlockIfNeeded()
+    {
+        if (currentState == PlayerState.Blocking)
+            currentState = PlayerState.Idle;
+    }
 
-    //     // flipX = true means sprite faces LEFT
-    //     spriteRenderer.flipX = !opponentOnRight;
-    // }
 }
