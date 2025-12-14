@@ -410,7 +410,7 @@ GameObject:
   - component: {fileID: 109142162}
   - component: {fileID: 109142163}
   m_Layer: 0
-  m_Name: Player
+  m_Name: Player1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -428,15 +428,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c432893f136e744be8dacbf057eb6584, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPlayer2: 0
+  opponent: {fileID: 508681952}
   moveSpeed: 2.5
   jumpForce: 12
   dashSpeed: 15
   dashDuration: 0.2
   doubleTapTime: 0.25
-  animator: {fileID: 109142161}
   punchDuration: 0.25
   kickDuration: 0.4
-  specialDuration: 0.5
   punchHitbox: {fileID: 1692483957}
   kickHitbox: {fileID: 291996167}
 --- !u!4 &109142158
@@ -1357,7 +1357,7 @@ GameObject:
   - component: {fileID: 508681946}
   - component: {fileID: 508681947}
   m_Layer: 0
-  m_Name: Dummy
+  m_Name: Player2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1492,20 +1492,20 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 508681945}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c432893f136e744be8dacbf057eb6584, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPlayer2: 1
+  opponent: {fileID: 109142158}
   moveSpeed: 2.5
   jumpForce: 12
   dashSpeed: 15
   dashDuration: 0.2
   doubleTapTime: 0.25
-  animator: {fileID: 508681948}
   punchDuration: 0.25
   kickDuration: 0.4
-  specialDuration: 0.5
   punchHitbox: {fileID: 1116658329}
   kickHitbox: {fileID: 985540411}
 --- !u!4 &508681952
