@@ -80,6 +80,15 @@ public partial class @PlayerControls1: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Blocking"",
+                    ""type"": ""Button"",
+                    ""id"": ""3fb6f9f0-d6c8-4787-ac7e-4656eb26e556"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -170,6 +179,17 @@ public partial class @PlayerControls1: IInputActionCollection2, IDisposable
                     ""action"": ""TestDamage"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""be38495e-b139-4fdd-91b2-8cb0807576f7"",
+                    ""path"": ""<Keyboard>/rightShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Blocking"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -184,6 +204,7 @@ public partial class @PlayerControls1: IInputActionCollection2, IDisposable
         m_Player_Kick = m_Player.FindAction("Kick", throwIfNotFound: true);
         m_Player_Special = m_Player.FindAction("Special", throwIfNotFound: true);
         m_Player_TestDamage = m_Player.FindAction("TestDamage", throwIfNotFound: true);
+        m_Player_Blocking = m_Player.FindAction("Blocking", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -251,6 +272,7 @@ public partial class @PlayerControls1: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Kick;
     private readonly InputAction m_Player_Special;
     private readonly InputAction m_Player_TestDamage;
+    private readonly InputAction m_Player_Blocking;
     public struct PlayerActions
     {
         private @PlayerControls1 m_Wrapper;
@@ -261,6 +283,7 @@ public partial class @PlayerControls1: IInputActionCollection2, IDisposable
         public InputAction @Kick => m_Wrapper.m_Player_Kick;
         public InputAction @Special => m_Wrapper.m_Player_Special;
         public InputAction @TestDamage => m_Wrapper.m_Player_TestDamage;
+        public InputAction @Blocking => m_Wrapper.m_Player_Blocking;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -288,6 +311,9 @@ public partial class @PlayerControls1: IInputActionCollection2, IDisposable
             @TestDamage.started += instance.OnTestDamage;
             @TestDamage.performed += instance.OnTestDamage;
             @TestDamage.canceled += instance.OnTestDamage;
+            @Blocking.started += instance.OnBlocking;
+            @Blocking.performed += instance.OnBlocking;
+            @Blocking.canceled += instance.OnBlocking;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -310,6 +336,9 @@ public partial class @PlayerControls1: IInputActionCollection2, IDisposable
             @TestDamage.started -= instance.OnTestDamage;
             @TestDamage.performed -= instance.OnTestDamage;
             @TestDamage.canceled -= instance.OnTestDamage;
+            @Blocking.started -= instance.OnBlocking;
+            @Blocking.performed -= instance.OnBlocking;
+            @Blocking.canceled -= instance.OnBlocking;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -335,5 +364,6 @@ public partial class @PlayerControls1: IInputActionCollection2, IDisposable
         void OnKick(InputAction.CallbackContext context);
         void OnSpecial(InputAction.CallbackContext context);
         void OnTestDamage(InputAction.CallbackContext context);
+        void OnBlocking(InputAction.CallbackContext context);
     }
 }

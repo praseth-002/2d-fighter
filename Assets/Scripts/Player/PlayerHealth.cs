@@ -16,9 +16,15 @@ public class PlayerHealth : MonoBehaviour
     public float hitStunDuration = 0.4f;
     public float blockStunDuration = 0.2f;
 
+    [Header("Hitstop")]
+    public float hitStopDuration = 0.06f;
+    public float blockHitStopDuration = 0.04f;
+
     private PlayerMovement movement;
     private Animator animator;
     private Rigidbody2D rb;
+
+    private bool isDead = false;
 
     private void Awake()
     {
@@ -30,19 +36,20 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(int damage, Vector2 hitDirection)
     {
-        // bool blocked = movement.IsBlocking();
-        bool blocked = movement.IsBlocking();
+        if (isDead) return;
 
+        bool blocked = movement.IsBlocking();
 
         if (blocked)
         {
-            int reducedDamage = Mathf.RoundToInt(damage * blockDamageMultiplier);
-            currentHealth -= reducedDamage;
+            int reduced = Mathf.RoundToInt(damage * blockDamageMultiplier);
+            currentHealth -= reduced;
 
             animator.Play("PlayerBlock", 0, 0f);
             movement.EnterHitState(blockStunDuration);
 
             ApplyPushback(hitDirection, blockPushbackForce);
+            HitStopManager.Instance.DoHitStop(blockHitStopDuration);
         }
         else
         {
@@ -52,6 +59,7 @@ public class PlayerHealth : MonoBehaviour
             movement.EnterHitState(hitStunDuration);
 
             ApplyPushback(hitDirection, hitPushbackForce);
+            HitStopManager.Instance.DoHitStop(hitStopDuration);
         }
 
         if (currentHealth <= 0)
@@ -65,14 +73,19 @@ public class PlayerHealth : MonoBehaviour
     {
         direction.y = 0;
         direction.Normalize();
+
         rb.velocity = Vector2.zero;
         rb.AddForce(direction * force, ForceMode2D.Impulse);
     }
 
     private void Die()
     {
+        if (isDead) return;
+        isDead = true;
+
         animator.Play("PlayerDeath", 0, 0f);
         movement.EnterDeadState();
-        RoundManager.Instance.PlayerDied(this);
+
+        RoundManager.Instance.OnPlayerDeath(this);
     }
 }

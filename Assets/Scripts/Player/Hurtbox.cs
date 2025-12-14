@@ -9,12 +9,9 @@ public class Hurtbox : MonoBehaviour
         health = GetComponentInParent<PlayerHealth>();
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    // Called ONLY by Hitbox
+    public void ReceiveHit(int damage, Vector2 direction)
     {
-        Hitbox hitbox = other.GetComponent<Hitbox>();
-        if (!hitbox) return;
-
-        Vector2 direction = (transform.position - other.transform.position).normalized;
-        health.TakeDamage(hitbox.damage, direction);
+        health.TakeDamage(damage, direction);
     }
 }
