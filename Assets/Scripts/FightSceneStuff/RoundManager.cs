@@ -119,6 +119,8 @@ if (roundUI != null)
     private void EndMatch()
     {
         Time.timeScale = 1f;
+        MatchConfig.matchWinner =
+        p1RoundsWon > p2RoundsWon ? MatchWinner.Player1 : MatchWinner.Player2;
         SceneManager.LoadScene("ResultScene");
     }
 }

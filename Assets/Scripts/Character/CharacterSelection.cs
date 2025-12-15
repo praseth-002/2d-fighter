@@ -37,6 +37,8 @@ public class CharacterSelection : MonoBehaviour
 
         // Initial highlight + preview
         highlightFrame.position = slots[currentIndex].position;
+        // highlightFrame.anchoredPosition = slots[currentIndex].anchoredPosition;
+
         UpdatePreview(currentIndex);
         lastPreviewIndex = currentIndex;
     }
@@ -73,6 +75,8 @@ public class CharacterSelection : MonoBehaviour
         // Move highlight
         if (moved)
             highlightFrame.position = slots[currentIndex].position;
+            // highlightFrame.anchoredPosition = slots[currentIndex].anchoredPosition;
+
 
         // Update preview ONLY when index changes
         if (currentIndex != lastPreviewIndex)
