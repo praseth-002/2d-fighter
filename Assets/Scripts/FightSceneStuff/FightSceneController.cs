@@ -63,8 +63,14 @@ public class FightSceneController : MonoBehaviour
             healthUI.BindPlayers(player1, player2);
         }
         Debug.Log("HealthUI bound to players");
+        RoundManager.Instance.RegisterPlayers(
+    player1.GetComponent<PlayerHealth>(),
+    player2.GetComponent<PlayerHealth>()
+);
 
     }
+
+    
 
     void SetupPlayer(GameObject player, bool isPlayer2)
     {

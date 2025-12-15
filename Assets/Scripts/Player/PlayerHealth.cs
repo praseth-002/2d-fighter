@@ -88,4 +88,19 @@ public class PlayerHealth : MonoBehaviour
 
         RoundManager.Instance.OnPlayerDeath(this);
     }
+
+    public void ResetHealth()
+{
+    currentHealth = maxHealth;
+    isDead = false;
+}
+
+public void ResetState()
+{
+    // Let movement recover cleanly
+    PlayerMovement movement = GetComponent<PlayerMovement>();
+    if (movement != null)
+        movement.EnterHitState(0f);
+}
+
 }
