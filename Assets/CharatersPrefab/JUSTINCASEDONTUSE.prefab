@@ -708,7 +708,6 @@ GameObject:
   - component: {fileID: 1913551017457398627}
   - component: {fileID: 860592628159636581}
   - component: {fileID: 7008950717887530346}
-  - component: {fileID: 8905200246490535466}
   m_Layer: 0
   m_Name: JUSTINCASEDONTUSE
   m_TagString: Untagged
@@ -865,19 +864,6 @@ MonoBehaviour:
   blockStunDuration: 0.2
   hitStopDuration: 0.06
   blockHitStopDuration: 0.04
---- !u!114 &8905200246490535466
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4918385930811459935}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ebecbe4b91e7440a9d8f48f46b1407d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerHealth: {fileID: 7008950717887530346}
 --- !u!1 &5033421847564442676
 GameObject:
   m_ObjectHideFlags: 0

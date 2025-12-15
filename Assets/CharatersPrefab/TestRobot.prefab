@@ -709,7 +709,7 @@ GameObject:
   - component: {fileID: 860592628159636581}
   - component: {fileID: 7008950717887530346}
   m_Layer: 0
-  m_Name: PleaseCloneThisOne
+  m_Name: TestRobot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
