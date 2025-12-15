@@ -24,6 +24,9 @@ public class RoundManager : MonoBehaviour
     private int currentRound = 1;
 private RoundUI roundUI;
 
+    private RoundWinUI winUI;
+
+
     private void Awake()
     {
         if (Instance == null)
@@ -46,6 +49,13 @@ private RoundUI roundUI;
 if (roundUI != null)
 {
     roundUI.ShowRound(currentRound);
+}
+
+winUI = FindObjectOfType<RoundWinUI>(true);
+
+if (winUI != null)
+{
+    winUI.ResetMarkers();
 }
 
     }
@@ -73,6 +83,11 @@ if (roundUI != null)
         {
             Invoke(nameof(StartNextRound), endDelay);
         }
+
+        if (winUI != null)
+{
+    winUI.UpdateWins(p1RoundsWon, p2RoundsWon);
+}
     }
 
     private void StartNextRound()
