@@ -57,17 +57,17 @@ public class ResultScreenController : MonoBehaviour
     {
         switch (currentIndex)
         {
+            case 0: // Rematch
+                SceneManager.LoadScene("FightScene");
+                break;
+            case 1: // Reselect
+                SceneManager.LoadScene("SelectCharacterScene");
+                break;
             case 2: // Main Menu
                 SceneManager.LoadScene("MainMenu");
                 break;
 
-            case 1: // Reselect
-                SceneManager.LoadScene("SelectCharacterScene");
-                break;
 
-            case 0: // Rematch
-                SceneManager.LoadScene("FightScene");
-                break;
         }
     }
 }
