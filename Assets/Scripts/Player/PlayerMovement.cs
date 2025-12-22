@@ -164,8 +164,14 @@ public class PlayerMovement : MonoBehaviour
         if (state == PlayerState.Hit)
         {
             hitTimer -= Time.unscaledDeltaTime;
+            // if (hitTimer <= 0f)
+            //     state = PlayerState.Idle;
+            // return;
             if (hitTimer <= 0f)
+            {
                 state = PlayerState.Idle;
+                animator.Play("PlayerIdle", 0, 0f);
+            }
             return;
         }
 
@@ -173,8 +179,16 @@ public class PlayerMovement : MonoBehaviour
         if (state == PlayerState.Dashing)
         {
             dashTimer -= Time.deltaTime;
+            // if (dashTimer <= 0f)
+            //     state = isGrounded ? PlayerState.Idle : PlayerState.Jumping;
+            // return;
             if (dashTimer <= 0f)
+            {
                 state = isGrounded ? PlayerState.Idle : PlayerState.Jumping;
+
+                if (state == PlayerState.Idle)
+                    animator.Play("PlayerIdle", 0, 0f);
+            }
             return;
         }
 
@@ -199,10 +213,20 @@ public class PlayerMovement : MonoBehaviour
             if (isGrounded)
                 rb.velocity = new Vector2(0, rb.velocity.y);
 
+            // if (attackTimer <= 0f)
+            // {
+            //     DisableHitboxes();
+            //     state = isGrounded ? PlayerState.Idle : PlayerState.Jumping;
+            // }
+            // return;
             if (attackTimer <= 0f)
             {
                 DisableHitboxes();
+
                 state = isGrounded ? PlayerState.Idle : PlayerState.Jumping;
+
+                if (state == PlayerState.Idle)
+                    animator.Play("PlayerIdle", 0, 0f);
             }
             return;
         }
@@ -396,28 +420,28 @@ public class PlayerMovement : MonoBehaviour
     }
 
     public void AI_Move(float dir)
-{
-    OnMove(dir);
-}
+    {
+        OnMove(dir);
+    }
 
-public void AI_StopMove()
-{
-    OnMove(0f);
-}
+    public void AI_StopMove()
+    {
+        OnMove(0f);
+    }
 
-public void AI_Punch()
-{
-    Punch();
-}
+    public void AI_Punch()
+    {
+        Punch();
+    }
 
-public void AI_Kick()
-{
-    Kick();
-}
+    public void AI_Kick()
+    {
+        Kick();
+    }
 
-public void AI_Block(bool hold)
-{
-    blockHeld = hold;
-}
+    public void AI_Block(bool hold)
+    {
+        blockHeld = hold;
+    }
 
 }
