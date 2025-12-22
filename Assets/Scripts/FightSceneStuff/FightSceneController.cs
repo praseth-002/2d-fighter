@@ -128,22 +128,57 @@ public class FightSceneController : MonoBehaviour
     //     }
     // }
 
+    // void SetupPlayer(GameObject player, bool isPlayer2)
+    // {
+    //     PlayerMovement movement = player.GetComponent<PlayerMovement>();
+    //     if (movement != null)
+    //     {
+    //         movement.Initialize(isPlayer2);
+    //         movement.opponent = isPlayer2 ? player1.transform : player2.transform;
+
+    //         // 🔽 ADD THIS
+    //         if (isPlayer2 && MatchConfig.gameMode == GameMode.PvCPU)
+    //         {
+    //             // Disable human input for CPU
+    //             movement.enabled = true; // movement stays ON
+    //         }
+    //     }
+    // }
+
     void SetupPlayer(GameObject player, bool isPlayer2)
     {
         PlayerMovement movement = player.GetComponent<PlayerMovement>();
-        if (movement != null)
-        {
-            movement.Initialize(isPlayer2);
-            movement.opponent = isPlayer2 ? player1.transform : player2.transform;
+        if (movement == null) return;
 
-            // 🔽 ADD THIS
-            if (isPlayer2 && MatchConfig.gameMode == GameMode.PvCPU)
+        movement.Initialize(isPlayer2);
+        movement.opponent = isPlayer2 ? player1.transform : player2.transform;
+
+        // 🔒 Disable HUMAN input for P2 in PvCPU mode
+        if (isPlayer2 && MatchConfig.gameMode == GameMode.PvCPU)
+        {
+            DisablePlayer2Input(movement);
+        }
+    }
+
+    void DisablePlayer2Input(PlayerMovement movement)
+    {
+        // We ONLY disable input actions, not movement
+        var field = typeof(PlayerMovement).GetField(
+            "controlsP2",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
+        );
+
+        if (field != null)
+        {
+            var controls = field.GetValue(movement) as PlayerControls1;
+            if (controls != null)
             {
-                // Disable human input for CPU
-                movement.enabled = true; // movement stays ON
+                controls.Disable();
+                Debug.Log("Player 2 input disabled (CPU mode)");
             }
         }
     }
+
 
     void FaceEachOther(GameObject p1, GameObject p2)
     {

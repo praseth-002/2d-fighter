@@ -86,14 +86,31 @@ public class CharacterSelection : MonoBehaviour
 
             Debug.Log("P1 selected: " + selected.characterName);
 
+            // if (MatchConfig.gameMode == GameMode.PvCPU)
+            // {
+            //     MatchConfig.player2Character = characters[0];
+            //     SpawnPreviewP2(MatchConfig.player2Character);
+
+            //     Debug.Log("CPU auto-selected: " + MatchConfig.player2Character.characterName);
+            //     SceneManager.LoadScene("SelectStage");
+            // }
             if (MatchConfig.gameMode == GameMode.PvCPU)
             {
-                MatchConfig.player2Character = characters[0];
+                int cpuIndex;
+
+                do
+                {
+                    cpuIndex = Random.Range(0, characters.Length);
+                }
+                while (characters[cpuIndex] == MatchConfig.player1Character);
+
+                MatchConfig.player2Character = characters[cpuIndex];
                 SpawnPreviewP2(MatchConfig.player2Character);
 
                 Debug.Log("CPU auto-selected: " + MatchConfig.player2Character.characterName);
                 SceneManager.LoadScene("SelectStage");
             }
+
         }
         else
         {
