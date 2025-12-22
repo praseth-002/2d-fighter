@@ -394,4 +394,30 @@ public class PlayerMovement : MonoBehaviour
             lastTapTime = Time.time;
         }
     }
+
+    public void AI_Move(float dir)
+{
+    OnMove(dir);
+}
+
+public void AI_StopMove()
+{
+    OnMove(0f);
+}
+
+public void AI_Punch()
+{
+    Punch();
+}
+
+public void AI_Kick()
+{
+    Kick();
+}
+
+public void AI_Block(bool hold)
+{
+    blockHeld = hold;
+}
+
 }

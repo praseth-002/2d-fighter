@@ -36,6 +36,40 @@ public class FightSceneController : MonoBehaviour
         }
     }
 
+    //     void SpawnPlayers()
+    //     {
+    //         // Spawn Player 1
+    //         player1 = Instantiate(
+    //             MatchConfig.player1Character.characterPrefab,
+    //             player1Spawn.position,
+    //             Quaternion.identity
+    //         );
+
+    //         // Spawn Player 2
+    //         player2 = Instantiate(
+    //             MatchConfig.player2Character.characterPrefab,
+    //             player2Spawn.position,
+    //             Quaternion.identity
+    //         );
+
+    //         SetupPlayer(player1, isPlayer2: false);
+    //         SetupPlayer(player2, isPlayer2: true);
+
+    //         FaceEachOther(player1, player2);
+
+    //         PlayerHealthUI healthUI = FindObjectOfType<PlayerHealthUI>();
+    //         if (healthUI != null)
+    //         {
+    //             healthUI.BindPlayers(player1, player2);
+    //         }
+    //         Debug.Log("HealthUI bound to players");
+    //         RoundManager.Instance.RegisterPlayers(
+    //     player1.GetComponent<PlayerHealth>(),
+    //     player2.GetComponent<PlayerHealth>()
+    // );
+
+    //     }
+
     void SpawnPlayers()
     {
         // Spawn Player 1
@@ -55,6 +89,18 @@ public class FightSceneController : MonoBehaviour
         SetupPlayer(player1, isPlayer2: false);
         SetupPlayer(player2, isPlayer2: true);
 
+        // 🔽 ADD THIS BLOCK
+        // if (MatchConfig.gameMode == GameMode.PvCPU)
+        // {
+        //     Debug.Log("CPU MODE ENABLED → Adding AI to Player 2");
+        //     player2.AddComponent<PlayerAIController>();
+        // }
+        if (MatchConfig.gameMode == GameMode.PvCPU)
+        {
+            Debug.Log("PvCPU MODE → Adding AI to Player 2");
+            player2.AddComponent<PlayerAIController>();
+        }
+
         FaceEachOther(player1, player2);
 
         PlayerHealthUI healthUI = FindObjectOfType<PlayerHealthUI>();
@@ -62,15 +108,25 @@ public class FightSceneController : MonoBehaviour
         {
             healthUI.BindPlayers(player1, player2);
         }
-        Debug.Log("HealthUI bound to players");
-        RoundManager.Instance.RegisterPlayers(
-    player1.GetComponent<PlayerHealth>(),
-    player2.GetComponent<PlayerHealth>()
-);
 
+        RoundManager.Instance.RegisterPlayers(
+            player1.GetComponent<PlayerHealth>(),
+            player2.GetComponent<PlayerHealth>()
+        );
     }
 
-    
+
+
+
+    // void SetupPlayer(GameObject player, bool isPlayer2)
+    // {
+    //     PlayerMovement movement = player.GetComponent<PlayerMovement>();
+    //     if (movement != null)
+    //     {
+    //         movement.Initialize(isPlayer2);
+    //         movement.opponent = isPlayer2 ? player1.transform : player2.transform;
+    //     }
+    // }
 
     void SetupPlayer(GameObject player, bool isPlayer2)
     {
@@ -79,6 +135,13 @@ public class FightSceneController : MonoBehaviour
         {
             movement.Initialize(isPlayer2);
             movement.opponent = isPlayer2 ? player1.transform : player2.transform;
+
+            // 🔽 ADD THIS
+            if (isPlayer2 && MatchConfig.gameMode == GameMode.PvCPU)
+            {
+                // Disable human input for CPU
+                movement.enabled = true; // movement stays ON
+            }
         }
     }
 
