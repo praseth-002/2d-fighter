@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec602ed5e901d4510ac96fbf77f08e10, type: 3}
+  m_Name: Zrong
+  m_EditorClassIdentifier: 
+  characterName: Zr
+  characterPrefab: {fileID: 4918385930811459935, guid: b2e271c1ae70b408caf528df2e4a7ae1, type: 3}
