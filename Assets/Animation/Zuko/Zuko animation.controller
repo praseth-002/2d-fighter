@@ -1,13 +1,13 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1102 &-7213614067048536172
+--- !u!1102 &-6560638919902010656
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PlayerJumPunch
+  m_Name: PlayerDamaged
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -20,7 +20,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 6a768aee0192f441f9d5041a340f4187, type: 2}
+  m_Motion: {fileID: 7400000, guid: 4d4cfc516d2964d2ab68a18a2fbc9d4a, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -178,14 +178,14 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1102 &5447790565994579252
+--- !u!1102 &4805988275960073360
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PlayerDamage
+  m_Name: PlayerJumpPunch
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -198,7 +198,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 4d4cfc516d2964d2ab68a18a2fbc9d4a, type: 2}
+  m_Motion: {fileID: 7400000, guid: 6a768aee0192f441f9d5041a340f4187, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -235,17 +235,17 @@ AnimatorStateMachine:
     m_State: {fileID: 7590727795550188958}
     m_Position: {x: 300, y: 400, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: -7213614067048536172}
-    m_Position: {x: 80, y: 430, z: 0}
-  - serializedVersion: 1
     m_State: {fileID: 8242132686528945749}
     m_Position: {x: 310, y: 120, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6595545835578841468}
     m_Position: {x: 310, y: 60, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: 5447790565994579252}
-    m_Position: {x: 100, y: 490, z: 0}
+    m_State: {fileID: -6560638919902010656}
+    m_Position: {x: 113.5163, y: 515.1603, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 4805988275960073360}
+    m_Position: {x: 36.057007, y: 462.08636, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
