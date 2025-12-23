@@ -842,7 +842,7 @@ MonoBehaviour:
   dashSpeed: 10
   dashDuration: 0.15
   doubleTapTime: 0.25
-  punchDuration: 0.25
+  punchDuration: 0.4
   kickDuration: 0.4
   punchHitbox: {fileID: 7703454760115912623}
   kickHitbox: {fileID: 5820941903503813159}
