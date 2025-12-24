@@ -25,6 +25,8 @@ public class PlayerHealth : MonoBehaviour
     private Rigidbody2D rb;
 
     private bool isDead = false;
+    private PlayerSound playerSound;
+
 
     private void Awake()
     {
@@ -32,6 +34,8 @@ public class PlayerHealth : MonoBehaviour
         movement = GetComponent<PlayerMovement>();
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        playerSound = GetComponent<PlayerSound>();
+
     }
 
     public void TakeDamage(int damage, Vector2 hitDirection)
@@ -60,6 +64,7 @@ public class PlayerHealth : MonoBehaviour
 
             ApplyPushback(hitDirection, hitPushbackForce);
             HitStopManager.Instance.DoHitStop(hitStopDuration);
+            playerSound.PlaySound(PlayerSound.SoundType.Hurt);
         }
 
         if (currentHealth <= 0)
@@ -82,7 +87,7 @@ public class PlayerHealth : MonoBehaviour
     {
         if (isDead) return;
         isDead = true;
-
+        playerSound.PlaySound(PlayerSound.SoundType.Death);
         animator.Play("PlayerDeath", 0, 0f);
         movement.EnterDeadState();
 
@@ -90,17 +95,17 @@ public class PlayerHealth : MonoBehaviour
     }
 
     public void ResetHealth()
-{
-    currentHealth = maxHealth;
-    isDead = false;
-}
+    {
+        currentHealth = maxHealth;
+        isDead = false;
+    }
 
-public void ResetState()
-{
-    // Let movement recover cleanly
-    PlayerMovement movement = GetComponent<PlayerMovement>();
-    if (movement != null)
-        movement.EnterHitState(0f);
-}
+    public void ResetState()
+    {
+        // Let movement recover cleanly
+        PlayerMovement movement = GetComponent<PlayerMovement>();
+        if (movement != null)
+            movement.EnterHitState(0f);
+    }
 
 }

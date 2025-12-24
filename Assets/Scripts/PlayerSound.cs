@@ -4,66 +4,73 @@ public class PlayerSound : MonoBehaviour
 {
     public enum SoundType
     {
-        Punch,
-        Kick,
-        Jump,
-        Hurt,
-        Block,
-        Dash,
-        Death,
-        Walk
+        Spawn,   // 0
+        Punch,   // 1
+        Kick,    // 2
+        Jump,    // 3
+        Dash,    // 4
+        Hurt,    // 5
+        Death,    // 6
+        Block
     }
 
+    [Header("Audio")]
     public AudioSource audioSource;
 
+    [Header("Clips")]
+    public AudioClip spawn;
     public AudioClip punch;
     public AudioClip kick;
     public AudioClip jump;
-    public AudioClip hurt;
-    public AudioClip block;
     public AudioClip dash;
+    public AudioClip hurt;
     public AudioClip death;
-    public AudioClip walk;
+    public AudioClip block;
+
+    void Awake()
+    {
+        if (!audioSource)
+            audioSource = GetComponent<AudioSource>();
+    }
+
+    void Start()
+    {
+        // Play once when character spawns
+        PlaySound(SoundType.Spawn);
+    }
 
     public void PlaySound(SoundType sound)
     {
         switch (sound)
         {
+            case SoundType.Spawn:
+                audioSource.PlayOneShot(spawn);
+                break;
             case SoundType.Punch:
                 audioSource.PlayOneShot(punch);
                 break;
-
             case SoundType.Kick:
                 audioSource.PlayOneShot(kick);
                 break;
-
             case SoundType.Jump:
                 audioSource.PlayOneShot(jump);
                 break;
-
-            case SoundType.Hurt:
-                audioSource.PlayOneShot(hurt);
-                break;
-
-            case SoundType.Block:
-                audioSource.PlayOneShot(block);
-                break;
-            
             case SoundType.Dash:
                 audioSource.PlayOneShot(dash);
                 break;
-
+            case SoundType.Hurt:
+                audioSource.PlayOneShot(hurt);
+                break;
             case SoundType.Death:
                 audioSource.PlayOneShot(death);
                 break;
-            
-            case SoundType.Walk:
-            audioSource.PlayOneShot(walk);
-            break;
+            case SoundType.Block:
+                audioSource.PlayOneShot(block);
+                break;
         }
     }
 
-    
+    // Used by Animation Events
     public void PlaySoundFromEvent(int soundIndex)
     {
         PlaySound((SoundType)soundIndex);

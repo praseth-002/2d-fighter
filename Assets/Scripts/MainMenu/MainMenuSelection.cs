@@ -23,16 +23,28 @@ public class MainMenuSelection : MonoBehaviour
         if (vertical)
         {
             if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
                 Move(1);
+                MenuAudioManager.Instance.PlayMove();
+            }
             else if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
                 Move(-1);
+                MenuAudioManager.Instance.PlayMove();
+            }
         }
         else
         {
             if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
                 Move(1);
+                MenuAudioManager.Instance.PlayMove();
+            }
             else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
                 Move(-1);
+                MenuAudioManager.Instance.PlayMove();
+            }
         }
 
         // Confirm
@@ -41,6 +53,7 @@ public class MainMenuSelection : MonoBehaviour
             Button btn = options[currentIndex].GetComponent<Button>();
             if (btn != null)
                 btn.onClick.Invoke();
+            MenuAudioManager.Instance.PlayConfirm();
         }
     }
 

@@ -6,11 +6,11 @@ public class StageSelectionNavigation : MonoBehaviour
     [Header("References")]
     public StageManager stageManager;
 
-    public RectTransform highlight;          // highlight frame / cursor
-    public RectTransform[] stageButtons;     // buttons or images representing stages
+    public RectTransform highlight;          
+    public RectTransform[] stageButtons;     
 
     [Header("Layout")]
-    public bool vertical = false;            // true = up/down, false = left/right
+    public bool vertical = false;            
 
     private int currentIndex = 0;
 
@@ -26,22 +26,35 @@ public class StageSelectionNavigation : MonoBehaviour
         if (vertical)
         {
             if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
                 Move(1);
+                MenuAudioManager.Instance.PlayMove();
+            }
             else if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
                 Move(-1);
+                MenuAudioManager.Instance.PlayMove();
+            }
         }
         else
         {
             if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
                 Move(1);
+                MenuAudioManager.Instance.PlayMove();
+            }
             else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
                 Move(-1);
+                MenuAudioManager.Instance.PlayMove();
+            }
         }
 
         // Confirm
         if (Input.GetKeyDown(KeyCode.Return))
         {
             stageManager.ConfirmStage();
+            MenuAudioManager.Instance.PlayConfirm();
         }
     }
 

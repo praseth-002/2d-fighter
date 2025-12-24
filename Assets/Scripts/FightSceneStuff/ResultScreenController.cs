@@ -23,13 +23,20 @@ public class ResultScreenController : MonoBehaviour
     {
         // Navigation
         if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
             Move(1);
+            MenuAudioManager.Instance.PlayMove();
+        }
         else if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
             Move(-1);
+            MenuAudioManager.Instance.PlayMove();
+        }
 
         // Confirm
         if (Input.GetKeyDown(KeyCode.Return))
         {
+            MenuAudioManager.Instance.PlayConfirm();
             Confirm();
         }
     }
