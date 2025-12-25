@@ -884,7 +884,7 @@ MonoBehaviour:
   kick: {fileID: 8300000, guid: 83016509f877c4dc19d1697c55ba3e6d, type: 3}
   jump: {fileID: 8300000, guid: 0e4e547e0826944b694158e008750fdc, type: 3}
   dash: {fileID: 8300000, guid: 56029d5354a5a48cc8bf114c0ccf7752, type: 3}
-  hurt: {fileID: 8300000, guid: cf34a5ff8f93640ac922dc9771d60e5c, type: 3}
+  hurt: {fileID: 8300000, guid: 3c6251622960f4640b859b01e587df38, type: 3}
   death: {fileID: 8300000, guid: 687c7d1de50704bfd9a84fe5c0127674, type: 3}
   block: {fileID: 8300000, guid: acea3b7a8621543d590410c0419e92f4, type: 3}
 --- !u!82 &4358774649907039904

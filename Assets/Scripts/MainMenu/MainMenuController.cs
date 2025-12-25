@@ -14,4 +14,9 @@ public class MainMenuController : MonoBehaviour
         MatchConfig.gameMode = GameMode.PvCPU;
         SceneManager.LoadScene("SelectCharacterScene");
     }
+
+    public void OnInstructionPressed()
+    {
+        SceneManager.LoadScene("InstructionScene");
+    }
 }
