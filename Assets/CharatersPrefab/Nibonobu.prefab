@@ -794,6 +794,8 @@ GameObject:
   - component: {fileID: 1913551017457398627}
   - component: {fileID: 860592628159636581}
   - component: {fileID: 7008950717887530346}
+  - component: {fileID: 8748333246861193677}
+  - component: {fileID: 1952656423842051615}
   m_Layer: 0
   m_Name: Nibonobu
   m_TagString: Untagged
@@ -950,6 +952,123 @@ MonoBehaviour:
   blockStunDuration: 0.2
   hitStopDuration: 0.06
   blockHitStopDuration: 0.04
+--- !u!82 &8748333246861193677
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4918385930811459935}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &1952656423842051615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4918385930811459935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acae823e8a44842a882d1c98f611e9f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSource: {fileID: 8748333246861193677}
+  spawn: {fileID: 8300000, guid: fb894cc24493d478a81ed2e411df7d3d, type: 3}
+  punch: {fileID: 8300000, guid: fb894cc24493d478a81ed2e411df7d3d, type: 3}
+  kick: {fileID: 8300000, guid: 73e7d495b5d34425794e06c1329d398e, type: 3}
+  jump: {fileID: 8300000, guid: bd972d1a07cd943a6b216670b668b838, type: 3}
+  dash: {fileID: 8300000, guid: bd972d1a07cd943a6b216670b668b838, type: 3}
+  hurt: {fileID: 8300000, guid: 8aac16acf1cd74b84a03a98b49b801d4, type: 3}
+  death: {fileID: 8300000, guid: db9cee91060b3404b93ec8858889d97d, type: 3}
+  block: {fileID: 8300000, guid: bd972d1a07cd943a6b216670b668b838, type: 3}
 --- !u!1 &5033421847564442676
 GameObject:
   m_ObjectHideFlags: 0
